@@ -3,10 +3,10 @@
 ## TODO
 
 - [x] auth (login, logout)
-- [ ] ticket list
-  - [ ] unassigned tickets
-  - [ ] assigned to me
-  - [ ] all tickets
+- [x] ticket list
+  - [x] unassigned tickets
+  - [x] assigned to me
+  - [x] all tickets
   - [ ] filter by status
   - [ ] filter by priority
   - [ ] filter by customer
@@ -17,11 +17,12 @@
   - [x] comments
   - [x] comment using markdown
   - [ ] attachments for comments
-  - [ ] private comments / notes
-  - [ ] show open time
-  - [ ] assignee
+  - [x] private comments / notes
+  - [x] show open time
+  - [x] assignee
   - [ ] close ticket
   - [ ] reopen ticket
+  - [ ] change assignee
   - [ ] reply using predefined templates
 - [ ] email
   - [ ] add new email as ticket

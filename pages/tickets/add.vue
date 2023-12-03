@@ -7,12 +7,31 @@
         <UInput v-model="newTicket.title" />
       </UFormGroup>
 
+      <UFormGroup label="Assignee ID" name="assigneeId">
+        <USelectMenu
+          v-model="newTicket.assigneeId"
+          :searchable="searchAssignee"
+          option-attribute="name"
+          value-attribute="id"
+        >
+        </USelectMenu>
+      </UFormGroup>
+
       <UFormGroup label="Customer ID" name="customerId">
         <UInput v-model="newTicket.customerId" type="number" />
       </UFormGroup>
 
       <UFormGroup label="Priority" name="priority">
-        <USelectMenu v-model="newTicket.priority" :options="priorities" value-attribute="value" />
+        <USelectMenu
+          v-model="newTicket.priority"
+          :options="priorities"
+          value-attribute="value"
+          option-attribute="label"
+        >
+          <template #label>
+            {{ priorities.find((p) => p.value === newTicket.priority)?.label }}
+          </template>
+        </USelectMenu>
       </UFormGroup>
 
       <UButton type="submit" label="Add ticket" icon="i-heroicons-plus" class="mt-2 mx-auto" />
@@ -27,18 +46,22 @@ const toast = useToast();
 
 const schema = z.object({
   customerId: z.number().int(),
+  assigneeId: z.number().int().optional(),
   priority: z.number().int(),
   title: z.string().nonempty(),
 });
 
 const priorities = [
-  { label: 'Low', value: 0 },
-  { label: 'Medium', value: 1 },
-  { label: 'High', value: 2 },
+  { label: 'Low - 0', value: 0 },
+  { label: 'Normal - 1', value: 1 },
+  { label: 'Medium - 2', value: 2 },
+  { label: 'High - 3', value: 3 },
+  { label: 'Escalated - 4', value: 4 },
 ];
 
 const newTicket = ref<Partial<z.infer<typeof schema>>>({
   customerId: 1,
+  assigneeId: undefined,
   title: '',
   priority: 0,
 });
@@ -56,5 +79,11 @@ async function submit() {
     description: `Ticker ${ticket.id} added successfully`,
     color: 'green',
   });
+}
+
+async function searchAssignee(query: string) {
+  const users = await $fetch('/api/users');
+
+  return users.filter((u) => u.name?.toLowerCase().includes(query.toLowerCase())).filter(Boolean);
 }
 </script>

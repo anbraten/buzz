@@ -1,5 +1,5 @@
-import type { InferInsertModel } from 'drizzle-orm';
-import { ticketCommentSchema } from '~/server/schemas';
+import { eq, type InferInsertModel } from 'drizzle-orm';
+import { ticketCommentSchema, ticketSchema } from '~/server/schemas';
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event);
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const ticket: InferInsertModel<typeof ticketCommentSchema> = {
+  const comment: InferInsertModel<typeof ticketCommentSchema> = {
     ticketId,
     type,
     content,
@@ -40,6 +40,19 @@ export default defineEventHandler(async (event) => {
     createdAt: new Date(),
   };
 
-  const comments = await db.insert(ticketCommentSchema).values(ticket).returning();
+  const comments = await db.insert(ticketCommentSchema).values(comment).returning();
+
+  if (comment.type === 'agent-reply' || comment.type === 'customer-reply') {
+    await db
+      .update(ticketSchema)
+      .set({
+        updatedAt: new Date(),
+        unreadAgentReplies: comment.type === 'agent-reply' ? 1 : undefined,
+        unreadCustomerReplies: comment.type === 'customer-reply' ? 1 : undefined,
+      })
+      .where(eq(ticketSchema.id, ticketId))
+      .execute();
+  }
+
   return comments?.[0];
 });

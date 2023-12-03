@@ -1,8 +1,24 @@
 <template>
   <div class="w-full">
-    <h1 class="text-xl">Tickets</h1>
+    <h1 class="text-xl" v-if="$route.query.filter === 'my'">Tickets I am assigned to</h1>
+    <h1 class="text-xl" v-else-if="$route.query.filter === 'new'">Newt tickets</h1>
+    <h1 class="text-xl" v-else>Tickets</h1>
 
     <UTable :loading="pending" :rows="tickets || []" :columns="ticketColumns" @select="selectTicket">
+      <template #title-data="{ row }">
+        <div class="flex items-center">
+          <span>{{ row.title }}</span>
+          <UBadge
+            v-if="row.unreadCustomerReplies === 1"
+            label="New message from customer"
+            size="xs"
+            color="cyan"
+            variant="subtle"
+            class="ml-2"
+          />
+        </div>
+      </template>
+
       <template #status-data="{ row }">
         <TicketStatus :ticket="row" />
       </template>
@@ -34,11 +50,11 @@ const ticketColumns = [
     label: 'Title',
     sortable: true,
   },
-  {
-    key: 'status',
-    label: 'Status',
-    sortable: true,
-  },
+  // {
+  //   key: 'status',
+  //   label: 'Status',
+  //   sortable: true,
+  // },
   {
     key: 'priority',
     label: 'Priority',

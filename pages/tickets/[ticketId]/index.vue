@@ -26,19 +26,33 @@
     <TicketComment v-for="comment in comments" :key="comment.id" :comment="comment" />
 
     <UCard>
-      <USelectMenu v-model="newComment.type" :options="commentTypes" value-attribute="value">
-        <template #option="{ option }">
-          <span class="truncate">{{ option.label }}</span>
-        </template>
-      </USelectMenu>
-
-      <h2>Add new {{ commentTypes.find((c) => c.value === newComment.type)?.label }}</h2>
       <UForm :schema="commentSchema" :state="newComment" @submit="submit" class="flex flex-col gap-2 w-full">
-        <UFormGroup label="Message" name="content" required>
-          <MarkdownEditor v-model="newComment.content" />
+        <h2 class="mb-4">{{ newComment.type === 'internal-note' ? 'Add new comment' : 'Reply to customer' }}</h2>
+
+        <UFormGroup :label="newComment.type === 'internal-note' ? 'Comment' : 'Message'" name="content" required>
+          <MarkdownEditor
+            v-model="newComment.content"
+            :placeholder="
+              newComment.type === 'internal-note'
+                ? 'Write some comment about a call, research you have done or ask one of your colleagues for help.'
+                : 'The customer will receive this message as an email'
+            "
+          />
         </UFormGroup>
 
-        <UButton type="submit" label="Comment" icon="i-heroicons-plus" class="mt-2 mx-auto" />
+        <UCheckbox
+          :model-value="newComment.type === 'internal-note'"
+          name="internal"
+          label="Make this an internal comment"
+          @update:model-value="newComment.type = $event ? 'internal-note' : 'agent-reply'"
+        />
+
+        <UButton
+          type="submit"
+          :color="newComment.type === 'internal-note' ? 'primary' : 'blue'"
+          :label="newComment.type === 'internal-note' ? 'Add comment' : 'Reply to customer'"
+          class="mx-auto"
+        />
       </UForm>
     </UCard>
   </div>
@@ -49,13 +63,6 @@ import { z } from 'zod';
 
 const route = useRoute();
 const toast = useToast();
-
-const commentTypes = [
-  { label: 'Reply', value: 'agent-reply' },
-  { label: 'Call note', value: 'call' },
-  { label: 'Internal note', value: 'internal-note' },
-  { label: 'Customer reply', value: 'customer-reply' },
-];
 
 const ticketId = route.params.ticketId as string;
 const { data: ticket } = await useFetch(`/api/tickets/${ticketId}`);
@@ -70,7 +77,7 @@ const commentSchema = z.object({
 });
 
 const newComment = ref<Partial<z.infer<typeof commentSchema>>>({
-  type: 'agent-reply',
+  type: 'internal-note',
   content: '',
 });
 
@@ -81,7 +88,7 @@ async function submit() {
   });
 
   newComment.value = {
-    type: 'agent-reply',
+    type: 'internal-note',
     content: '',
   };
 

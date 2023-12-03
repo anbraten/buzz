@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { ticketSchema } from '~/server/schemas';
 
 export default defineEventHandler(async (event) => {
@@ -7,7 +7,11 @@ export default defineEventHandler(async (event) => {
   const { filter } = getQuery<{ filter?: 'new' | 'my' }>(event);
 
   if (filter === 'new') {
-    return await db.select().from(ticketSchema).where(eq(ticketSchema.status, 'open')).all();
+    return await db
+      .select()
+      .from(ticketSchema)
+      .where(and(eq(ticketSchema.status, 'open'), isNull(ticketSchema.assigneeId)))
+      .all();
   }
 
   if (filter === 'my') {

@@ -1,8 +1,9 @@
 <template>
   <div v-if="assignee" class="flex items-center">
-    <UAvatar :src="assignee.avatarUrl" size="xs" />
-    <span class="ml-2">{{ assignee.name || 'Unassigned' }}</span>
+    <UAvatar v-if="assignee.avatarUrl" :src="assignee.avatarUrl" size="xs" />
+    <span class="ml-2">{{ assignee.name }}</span>
   </div>
+  <div v-else>Unassigned</div>
 </template>
 
 <script lang="ts" setup>

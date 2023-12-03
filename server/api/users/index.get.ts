@@ -8,7 +8,13 @@ export default defineEventHandler(async (event) => {
 
   const ids = _ids?.split(',')?.map((id) => parseInt(id, 10)) ?? [];
 
-  return (await db.select().from(userSchema).where(inArray(userSchema.id, ids)).all()).map((user) => ({
+  return (
+    await db
+      .select()
+      .from(userSchema)
+      .where(ids.length ? inArray(userSchema.id, ids) : undefined)
+      .all()
+  ).map((user) => ({
     id: user.id,
     name: user.name,
     email: user.email,

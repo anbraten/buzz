@@ -1,0 +1,42 @@
+# Buzz
+
+## TODO
+
+- [x] auth (login, logout)
+- [ ] ticket list
+  - [ ] unassigned tickets
+  - [ ] assigned to me
+  - [ ] all tickets
+  - [ ] filter by status
+  - [ ] filter by priority
+  - [ ] filter by customer
+  - [ ] filter by assignee
+- [ ] create ticket
+- [ ] ticket (details)
+  - [ ] id, priority, customer (email), status, title, created, updated
+  - [ ] comments
+  - [ ] comment using markdown
+  - [ ] attachments for comments
+  - [ ] private comments / notes
+  - [ ] show open time
+  - [ ] assignee
+  - [ ] close ticket
+  - [ ] reopen ticket
+  - [ ] reply using predefined templates
+- [ ] email
+  - [ ] add new email as ticket
+  - [ ] auto reply for new ticket
+  - [ ] add email as comment to existing ticket
+- [ ] phone
+  - [ ] add note (with call duration, ...) to ticket if customer calls, so user can add comments later
+- [ ] customer portal
+  - [ ] show customer tickets
+  - [ ] hide internal comments
+  - [ ] create new ticket
+  - [ ] add comment to open ticket
+  - [ ] close ticket
+  - [ ] reopen ticket
+- [ ] ticket queues
+  - [ ] assign new ticket to queue
+  - [ ] assign users to queue
+  - [ ] show ticket queues of user

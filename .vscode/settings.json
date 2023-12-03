@@ -1,0 +1,9 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none",
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///home/anton/Projects/geprog/dev-addy/.github/workflows/deploy.yml"
+  }
+}

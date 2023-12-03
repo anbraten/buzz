@@ -1,0 +1,32 @@
+data/*
+.env
+env/
+__pycache__
+
+# Nuxt dev/build outputs
+.output
+.nuxt
+.nitro
+.cache
+dist
+build/
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Sqlite database
+*.db

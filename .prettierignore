@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+dist
+coverage/
+.pnpm-store/
+server/db/migrations/meta/*.json
+server/db/migrations/*.sql

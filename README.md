@@ -11,11 +11,11 @@
   - [ ] filter by priority
   - [ ] filter by customer
   - [ ] filter by assignee
-- [ ] create ticket
-- [ ] ticket (details)
-  - [ ] id, priority, customer (email), status, title, created, updated
-  - [ ] comments
-  - [ ] comment using markdown
+- [x] create ticket
+- [x] ticket (details)
+  - [x] id, priority, customer (email), status, title, created, updated
+  - [x] comments
+  - [x] comment using markdown
   - [ ] attachments for comments
   - [ ] private comments / notes
   - [ ] show open time

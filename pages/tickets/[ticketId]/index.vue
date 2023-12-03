@@ -5,6 +5,10 @@
         {{ ticket.title }} <span class="text-zinc-400">#{{ ticket.id }}</span>
       </h1>
       <div class="flex gap-2">
+        <span class="text-sm text-gray-500">Priority {{ ticket.priority }}</span>
+        <span class="text-sm text-gray-500">Customer {{ ticket.customerId }}</span>
+        <span class="text-sm text-gray-500">Assignee {{ ticket.assigneeId }}</span>
+        <span class="text-sm text-gray-500">Status {{ ticket.status }}</span>
         <span class="text-sm text-gray-500">Created at {{ ticket.createdAt }}</span>
         <span class="text-sm text-gray-500">Updated at {{ ticket.updatedAt }}</span>
       </div>

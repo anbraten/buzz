@@ -1,10 +1,15 @@
-import { drizzle, BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { migrate as _migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import path from 'path';
+import { drizzle } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client';
 
-// @ts-ignore
-import Database from 'better-sqlite3';
+const tursoConfig = useRuntimeConfig().turso;
 
-const sqlite = new Database(path.join(process.env.DATA_PATH || 'data', 'buzz.db'));
+if (!tursoConfig.dbUrl || !tursoConfig.dbAuthToken) {
+  throw new Error('Please fill the NUXT_TURSO_DB_URL and NUXT_TURSO_DB_AUTH_TOKEN env variables');
+}
 
-export const db: BetterSQLite3Database = drizzle(sqlite);
+const client = createClient({
+  url: tursoConfig.dbUrl,
+  authToken: tursoConfig.dbAuthToken,
+});
+
+export const db = drizzle(client);

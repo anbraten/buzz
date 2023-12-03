@@ -1,13 +1,13 @@
 import type { Config } from 'drizzle-kit';
-
-// For config references visit  https://orm.drizzle.team/kit-docs/config-reference
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export default {
-  schema: ['./server/schemas/*.ts'],
+  schema: './server/schemas/index.ts',
   out: './server/db/migrations',
+  driver: 'turso',
   dbCredentials: {
-    url: 'data/buzz.db',
+    url: process.env.NUXT_TURSO_DB_URL as string,
+    authToken: process.env.NUXT_TURSO_DB_AUTH_TOKEN as string,
   },
-  driver: 'better-sqlite',
-  breakpoints: true,
 } satisfies Config;

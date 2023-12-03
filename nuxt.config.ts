@@ -2,16 +2,16 @@
 export default defineNuxtConfig({
   modules: ['nuxt-icon', '@nuxt/ui'],
   runtimeConfig: {
-    ai: {
-      url: 'http://localhost:8000',
-    },
     auth: {
       name: 'nuxt-session',
       password: 'my-super-secret-password-is-minimum-32-characters-long',
     },
-    data_path: process.env.DATA_PATH ?? 'data',
     public: {
       APP_URL: 'http://localhost:3000',
+    },
+    turso: {
+      dbUrl: '',
+      dbAuthToken: '',
     },
   },
   imports: {

@@ -1,32 +1,77 @@
 <template>
   <div v-if="ticket" class="w-full flex flex-col gap-4 max-w-4xl mx-auto">
-    <div class="border-b flex pb-1">
-      <div>
+    <UForm :schema="ticketSchema" :state="updatedTicket" @submit="updateTicket" class="border-b flex pb-1 gap-2">
+      <div class="flex flex-col gap-1">
         <div class="flex items-center gap-4">
-          <h1 class="text-xl">
-            {{ ticket.title }} <span class="text-zinc-400">#{{ ticket.id }}</span>
+          <h1 class="flex gap-2 text-xl">
+            <UInput v-if="isEditingTicket" name="title" v-model="updatedTicket.title" size="xs" />
+            <span v-else>{{ ticket.title }}</span>
+            <span class="text-zinc-400">#{{ ticket.id }}</span>
           </h1>
           <TicketStatus :ticket="ticket" />
         </div>
 
-        <div class="flex gap-2 text-zinc-500">
-          <span class="text-sm">Priority: <TicketPriority :ticket="ticket" /></span>
+        <div class="flex gap-2 text-zinc-500 items-center">
+          <div class="flex text-sm gap-1 items-center">
+            <span>Priority:</span>
+            <USelectMenu
+              v-if="isEditingTicket"
+              v-model="updatedTicket.priority"
+              :options="priorities"
+              value-attribute="value"
+              option-attribute="label"
+              size="xs"
+            >
+              <template #label>
+                {{ priorities.find((p) => p.value === updatedTicket.priority)?.label }}
+              </template>
+            </USelectMenu>
+            <TicketPriority v-else :ticket="ticket" />
+          </div>
           <span class="text-sm text-zinc-500">-</span>
           <span class="text-sm text-zinc-500">Opened: {{ timeAgo(ticket.createdAt) }}</span>
         </div>
       </div>
 
-      <div v-if="assignee" :title="assignee.name || ''" class="flex ml-auto gap-2 items-center pb-2">
-        <span class="text-sm text-zinc-500">Assigned to:</span>
-        <UAvatar :src="assignee.avatarUrl || ''" size="xs" />
-        <span class="text-sm text-zinc-500">{{ assignee.name || 'Unassigned' }}</span>
+      <div class="flex ml-auto items-center">
+        <div :title="assignee?.name || ''" class="flex gap-2 items-center">
+          <span class="text-sm text-zinc-500">Assigned to:</span>
+
+          <USelectMenu
+            v-if="isEditingTicket"
+            v-model="updatedTicket.assigneeId"
+            :searchable="searchAssignee"
+            option-attribute="name"
+            value-attribute="id"
+            size="xs"
+          >
+            <template #label>
+              <UAvatar :src="assignee?.avatarUrl || ''" size="3xs" class="mr-2" />
+              {{ assignee?.name || 'Unassigned' }}
+            </template>
+          </USelectMenu>
+          <template v-else-if="assignee">
+            <UAvatar :src="assignee.avatarUrl || ''" size="xs" />
+            <span class="text-sm text-zinc-500">{{ assignee.name || 'Unassigned' }}</span>
+          </template>
+        </div>
       </div>
-    </div>
+
+      <div class="flex items-center gap-1">
+        <template v-if="isEditingTicket">
+          <UButton type="button" color="gray" label="Cancel" size="xs" @click="isEditingTicket = false" />
+          <UButton type="submit" color="green" label="Save" size="xs" />
+        </template>
+        <template v-else>
+          <UButton type="button" color="gray" icon="i-ion-pencil" size="xs" @click="startTicketEditing" />
+        </template>
+      </div>
+    </UForm>
 
     <TicketComment v-for="comment in comments" :key="comment.id" :comment="comment" />
 
     <UCard>
-      <UForm :schema="commentSchema" :state="newComment" @submit="submit" class="flex flex-col gap-2 w-full">
+      <UForm :schema="commentSchema" :state="newComment" @submit="createComment" class="flex flex-col gap-2 w-full">
         <h2 class="mb-4">{{ newComment.type === 'internal-note' ? 'Add new comment' : 'Reply to customer' }}</h2>
 
         <UFormGroup :label="newComment.type === 'internal-note' ? 'Comment' : 'Message'" name="content" required>
@@ -65,23 +110,75 @@ const route = useRoute();
 const toast = useToast();
 
 const ticketId = route.params.ticketId as string;
-const { data: ticket } = await useFetch(`/api/tickets/${ticketId}`);
+const { data: ticket, refresh: refreshTicket } = await useFetch(`/api/tickets/${ticketId}`);
 
 const { data: comments, refresh: refreshComments } = await useFetch(`/api/tickets/${ticketId}/comments`);
 
-const { data: assignee } = await useFetch(`/api/users/${ticket.value?.assigneeId}`);
+const ticketSchema = z.object({
+  title: z.string().nonempty(),
+  assigneeId: z.number(),
+  priority: z.number(),
+  status: z.string().nonempty(),
+});
+const updatedTicket = ref<Partial<z.infer<typeof ticketSchema>>>({});
+const isEditingTicket = ref(false);
+function startTicketEditing() {
+  updatedTicket.value = {
+    title: ticket.value?.title,
+    assigneeId: ticket.value?.assigneeId ?? undefined,
+    priority: ticket.value?.priority ?? undefined,
+    status: ticket.value?.status,
+  };
+
+  isEditingTicket.value = true;
+}
+async function updateTicket() {
+  await $fetch(`/api/tickets/${ticketId}`, {
+    method: 'PATCH',
+    body: updatedTicket.value,
+  });
+
+  await refreshTicket();
+
+  isEditingTicket.value = false;
+
+  toast.add({
+    title: 'Ticket updated',
+    description: `Ticket #${ticket.value!.id} updated successfully`,
+    color: 'green',
+  });
+}
+
+const { data: assignee } = await useFetch(
+  computed(() =>
+    updatedTicket.value.assigneeId
+      ? `/api/users/${updatedTicket.value?.assigneeId}`
+      : `/api/users/${ticket.value?.assigneeId}`,
+  ),
+);
+
+async function searchAssignee(query: string) {
+  const users = await $fetch('/api/users');
+
+  return users.filter((u) => u.name?.toLowerCase().includes(query.toLowerCase())).filter(Boolean);
+}
+const priorities = [
+  { label: 'Low - 0', value: 0 },
+  { label: 'Normal - 1', value: 1 },
+  { label: 'Medium - 2', value: 2 },
+  { label: 'High - 3', value: 3 },
+  { label: 'Escalated - 4', value: 4 },
+];
 
 const commentSchema = z.object({
   type: z.string().nonempty(),
   content: z.string().nonempty(),
 });
-
 const newComment = ref<Partial<z.infer<typeof commentSchema>>>({
   type: 'internal-note',
   content: '',
 });
-
-async function submit() {
+async function createComment() {
   await $fetch(`/api/tickets/${ticketId}/comments`, {
     method: 'POST',
     body: newComment.value,
@@ -93,27 +190,5 @@ async function submit() {
   };
 
   await refreshComments();
-}
-
-async function deleteTicket() {
-  if (!ticket.value) {
-    return;
-  }
-
-  if (!confirm(`Do you want to remove the ticket #${ticket.value.id}`)) {
-    return;
-  }
-
-  await $fetch(`/api/tickets/${ticketId}`, {
-    method: 'DELETE',
-  });
-
-  toast.add({
-    title: 'Ticket removed',
-    description: `Ticket #${ticket.value!.id} removed successfully`,
-    color: 'green',
-  });
-
-  await navigateTo('/');
 }
 </script>

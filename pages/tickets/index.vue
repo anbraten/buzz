@@ -27,6 +27,10 @@
         <TicketPriority :ticket="row" />
       </template>
 
+      <template #createdAt-data="{ row }">
+        {{ timeAgo(row.createdAt) }}
+      </template>
+
       <template #assigneeId-data="{ row }">
         <TicketAssignee :assigneeId="row.assigneeId" />
       </template>
@@ -63,6 +67,11 @@ const ticketColumns = [
   {
     key: 'assigneeId',
     label: 'Assignee',
+    sortable: true,
+  },
+  {
+    key: 'createdAt',
+    label: 'Open since',
     sortable: true,
   },
 ];

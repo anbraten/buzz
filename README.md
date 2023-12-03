@@ -22,8 +22,13 @@
   - [x] assignee
   - [ ] close ticket
   - [ ] reopen ticket
-  - [ ] change assignee
+  - [x] change assignee
   - [ ] reply using predefined templates
+  - [ ] add category to tickets
+- [ ] customer list
+- [ ] customer (details)
+  - [ ] name, email, phone, address, avatar
+  - [ ] show customer tickets
 - [ ] email
   - [ ] add new email as ticket
   - [ ] auto reply for new ticket

@@ -7,7 +7,7 @@
         <UInput v-model="newTicket.title" />
       </UFormGroup>
 
-      <UFormGroup label="Assignee ID" name="assigneeId">
+      <UFormGroup label="Assignee" name="assigneeId">
         <USelectMenu
           v-model="newTicket.assigneeId"
           :searchable="searchAssignee"

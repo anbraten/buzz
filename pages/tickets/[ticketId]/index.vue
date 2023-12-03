@@ -1,6 +1,6 @@
 <template>
   <div v-if="ticket" class="w-full flex flex-col gap-4 max-w-4xl mx-auto">
-    <div class="border-b flex">
+    <div class="border-b flex pb-1">
       <div>
         <div class="flex items-center gap-4">
           <h1 class="text-xl">
@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex gap-2 text-zinc-500">
-          <span class="text-sm">Priority: {{ ticket.priority }}</span>
+          <span class="text-sm">Priority: <TicketPriority :ticket="ticket" /></span>
           <span class="text-sm text-zinc-500">-</span>
           <span class="text-sm text-zinc-500">Opened: {{ timeAgo(ticket.createdAt) }}</span>
         </div>

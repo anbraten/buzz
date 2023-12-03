@@ -17,8 +17,24 @@
         <h2 class="px-2 mb-2 text-lg font-semibold tracking-tight">Tickets</h2>
         <div class="space-y-1">
           <MenuItem to="/" title="Home" icon="i-ion-home" />
-          <MenuItem to="/tickets" title="Tickets" icon="i-ion-ios-chatboxes" />
-          <MenuItem to="/tickets/add" title="New Ticket" icon="i-ion-plus" />
+          <MenuItem to="/tickets?filter=new" title="New tickets" icon="i-ion-ios-chatboxes">
+            <template v-if="newTickets?.length || 0 > 0" #trailing>
+              <UBadge
+                :label="newTickets?.length"
+                size="xs"
+                color="amber"
+                class="ml-auto"
+                :ui="{ rounded: 'rounded-full' }"
+              />
+            </template>
+          </MenuItem>
+          <MenuItem to="/tickets?filter=my" title="My tickets" icon="i-ion-ios-chatboxes">
+            <template v-if="myTickets?.length || 0 > 0" #trailing>
+              <UBadge :label="myTickets?.length" size="xs" class="ml-auto" :ui="{ rounded: 'rounded-full' }" />
+            </template>
+          </MenuItem>
+          <MenuItem to="/tickets" title="All tickets" icon="i-ion-ios-chatboxes" />
+          <MenuItem to="/tickets/add" title="Open Ticket" icon="i-ion-plus" />
         </div>
       </div>
     </div>
@@ -83,4 +99,16 @@ const links = computed(() => [
     },
   },
 ]);
+
+const { data: newTickets } = await useFetch('/api/tickets', {
+  query: {
+    filter: 'new',
+  },
+});
+
+const { data: myTickets } = await useFetch('/api/tickets', {
+  query: {
+    filter: 'my',
+  },
+});
 </script>

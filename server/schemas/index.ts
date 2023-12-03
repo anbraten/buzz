@@ -12,7 +12,7 @@ export type User = InferSelectModel<typeof userSchema>;
 
 export const ticketSchema = sqliteTable('tickets', {
   id: integer('id').primaryKey(),
-  status: text('status').notNull(),
+  status: text('status').notNull(), // open, closed, pending-customer, pending-agent
   title: text('title').notNull(),
   priority: integer('priority').notNull(), // 0 = low, ..., 5 = high
   assigneeId: integer('assigneeId'),

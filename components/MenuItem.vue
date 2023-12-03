@@ -5,6 +5,7 @@
   >
     <UIcon v-if="icon" :name="icon" />
     <span v-if="title">{{ title }}</span>
+    <slot name="trailing" />
   </NuxtLink>
 </template>
 

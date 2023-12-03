@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <h1 class="text-xl" v-if="$route.query.filter === 'my'">Tickets I am assigned to</h1>
-    <h1 class="text-xl" v-else-if="$route.query.filter === 'new'">Newt tickets</h1>
+    <h1 class="text-xl" v-else-if="$route.query.filter === 'new'">New tickets</h1>
     <h1 class="text-xl" v-else>Tickets</h1>
 
     <UTable :loading="pending" :rows="tickets || []" :columns="ticketColumns" @select="selectTicket">

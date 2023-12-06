@@ -25,9 +25,9 @@
   - [x] change assignee
   - [ ] reply using predefined templates
   - [ ] add category to tickets
-- [ ] customer list
-- [ ] customer (details)
-  - [ ] name, email, phone, address, avatar
+- [x] customer list
+- [x] customer (details)
+  - [x] name, email, phone, address, avatar
   - [ ] show customer tickets
 - [x] email
   - [x] add new email as ticket

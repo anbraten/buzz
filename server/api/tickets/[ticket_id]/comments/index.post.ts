@@ -1,5 +1,6 @@
 import { eq, type InferInsertModel } from 'drizzle-orm';
-import { ticketCommentSchema, ticketSchema } from '~/server/schemas';
+import { customerSchema, ticketCommentSchema, ticketSchema } from '~/server/schemas';
+import { useEmail } from '~/server/utils/email';
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event);
@@ -52,6 +53,18 @@ export default defineEventHandler(async (event) => {
       })
       .where(eq(ticketSchema.id, ticketId))
       .execute();
+  }
+
+  if (comment.type === 'agent-reply') {
+    const { sendEmail } = useEmail();
+
+    const ticket = await db.select().from(ticketSchema).where(eq(ticketSchema.id, ticketId)).get();
+
+    const customer = await db.select().from(customerSchema).where(eq(customerSchema.id, ticket!.customerId)).get();
+
+    if (customer?.email) {
+      await sendEmail(customer.email, `Re: ${ticket?.title} #${ticketId}`, content);
+    }
   }
 
   return comments?.[0];

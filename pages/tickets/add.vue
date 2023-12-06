@@ -17,8 +17,14 @@
         </USelectMenu>
       </UFormGroup>
 
-      <UFormGroup label="Customer ID" name="customerId">
-        <UInput v-model="newTicket.customerId" type="number" />
+      <UFormGroup label="Customer" name="customerId">
+        <USelectMenu
+          v-model="newTicket.customerId"
+          :searchable="searchCustomer"
+          option-attribute="name"
+          value-attribute="id"
+        >
+        </USelectMenu>
       </UFormGroup>
 
       <UFormGroup label="Priority" name="priority">
@@ -85,5 +91,11 @@ async function searchAssignee(query: string) {
   const users = await $fetch('/api/users');
 
   return users.filter((u) => u.name?.toLowerCase().includes(query.toLowerCase())).filter(Boolean);
+}
+
+async function searchCustomer(query: string) {
+  const customers = await $fetch('/api/customers');
+
+  return customers.filter((u) => u.name?.toLowerCase().includes(query.toLowerCase())).filter(Boolean);
 }
 </script>

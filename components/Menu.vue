@@ -4,13 +4,16 @@
       class="flex items-center px-8 py-6 text-2xl font-semibold tracking-tight duration-200 cursor-pointer stroke-stone-800 dark:text-stone-200 dark:stroke-stone-500 dark:hover:stroke-white hover:stroke-stone-700 hover:text-stone-700 dark:hover:text-white"
       to="/"
     >
-      <img src="/logo_light.svg" alt="Buzz logo" class="w-8 dark:hidden" />
-      <img src="/logo_dark.svg" alt="Buzz dark logo" class="w-8 hidden dark:block" />
+      <img v-if="config.public.logo" :src="config.public.logo" alt="Logo" class="w-8" />
+      <template v-else>
+        <img src="/logo_light.svg" alt="Buzz logo" class="w-8 dark:hidden" />
+        <img src="/logo_dark.svg" alt="Buzz dark logo" class="w-8 hidden dark:block" />
+      </template>
       <span
         class="ml-2 text-transparent bg-gradient-to-tr from-gray-800 to-gray-400 dark:from-gray-100 dark:to-gray-400 bg-clip-text"
-        >B</span
+        >{{ config.public.name?.slice(0, 1) }}</span
       >
-      <span>uzz</span>
+      <span>{{ config.public.name?.slice(1) }}</span>
     </NuxtLink>
     <div class="space-y-4">
       <div class="px-6 py-2">
@@ -35,6 +38,11 @@
           </MenuItem>
           <MenuItem to="/tickets" title="All tickets" icon="i-ion-ios-chatboxes" />
           <MenuItem to="/tickets/add" title="Open Ticket" icon="i-ion-plus" />
+
+          <div class="border-b" />
+
+          <MenuItem to="/customers" title="Customers" icon="i-ion-ios-people" />
+          <MenuItem to="/customers/add" title="Add customer" icon="i-ion-plus" />
         </div>
       </div>
     </div>
@@ -71,6 +79,8 @@
 <script setup lang="ts">
 const router = useRouter();
 const { user, logout } = await useAuth();
+
+const config = useRuntimeConfig();
 
 const colorMode = useColorMode();
 const isDark = computed({

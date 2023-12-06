@@ -8,10 +8,28 @@ export default defineNuxtConfig({
     },
     public: {
       APP_URL: 'http://localhost:3000',
+      name: 'Buzz',
+      logo: '',
+      fallbackAvatar: '',
     },
     turso: {
       dbUrl: '',
       dbAuthToken: '',
+    },
+    email: {
+      name: 'Support',
+      user: '',
+      password: '',
+      imap: {
+        host: '',
+        port: 993,
+        tls: true,
+      },
+      smtp: {
+        host: '',
+        port: 587,
+        tls: true,
+      },
     },
   },
   imports: {

@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
   const tickets = await db
     .update(ticketSchema)
     .set({
+      customerId,
       status,
       title,
       priority,

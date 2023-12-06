@@ -1,11 +1,16 @@
 <template>
   <div class="flex gap-2 items-start">
-    <UAvatar :src="agent?.avatarUrl" size="md" class="mt-4" />
+    <UAvatar
+      :src="(comment.type === 'customer-reply' ? customer.avatarUrl : agent?.avatarUrl) || config.public.fallbackAvatar"
+      size="md"
+      class="mt-4"
+    />
 
     <div class="relative w-full">
       <UCard class="w-full relative" :class="{ 'bg-amber-100 dark:bg-amber-900': comment.type === 'internal-note' }">
         <div class="flex w-full border-b border-zinc-300 text-zinc-500 text-sm mb-4">
-          <span>{{ agent?.name || 'Customer' }}</span>
+          <span v-if="comment.type === 'customer-reply'">{{ customer.name }}</span>
+          <span v-else>{{ agent?.name }}</span>
           <span class="ml-auto">{{ timeAgo(comment.createdAt) }}</span>
         </div>
 
@@ -29,13 +34,19 @@
 </template>
 
 <script setup lang="ts">
-import type { TicketComment } from '~/server/schemas';
+import type { Ticket, TicketComment } from '~/server/schemas';
 
 const props = defineProps<{
   comment: TicketComment;
+  ticket: Ticket;
 }>();
 
 const comment = toRef(props, 'comment');
+const ticket = toRef(props, 'ticket');
 
 const { data: agent } = await useFetch(`/api/users/${comment.value.agentId}`);
+
+const { data: customer } = await useFetch(() => `/api/customers/${ticket.value?.customerId}`);
+
+const config = useRuntimeConfig();
 </script>

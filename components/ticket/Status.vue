@@ -14,8 +14,8 @@
     color="amber"
     variant="subtle"
   />
-  <UBadge v-else-if="invoice.status === 'overdue'" size="xs" label="Overdue" color="rose" variant="subtle" />
-  <UBadge v-else-if="invoice.status === 'closed'" size="xs" label="Closed" color="gray" variant="subtle" />
+  <UBadge v-else-if="ticket.status === 'overdue'" size="xs" label="Overdue" color="rose" variant="subtle" />
+  <UBadge v-else-if="ticket.status === 'closed'" size="xs" label="Closed" color="gray" variant="subtle" />
 </template>
 
 <script lang="ts" setup>

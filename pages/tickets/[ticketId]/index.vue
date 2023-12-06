@@ -62,13 +62,17 @@
           <UButton type="button" color="gray" label="Cancel" size="xs" @click="isEditingTicket = false" />
           <UButton type="submit" color="green" label="Save" size="xs" />
         </template>
+        <template v-else-if="ticket.status === 'closed'">
+          <UButton type="button" color="green" icon="i-ion-ios-undo" size="xs" @click="reopenTicket" />
+        </template>
         <template v-else>
           <UButton type="button" color="gray" icon="i-ion-pencil" size="xs" @click="startTicketEditing" />
+          <UButton type="button" color="red" icon="i-ion-close" size="xs" @click="closeTicket" />
         </template>
       </div>
     </UForm>
 
-    <TicketComment v-for="comment in comments" :key="comment.id" :comment="comment" />
+    <TicketComment v-for="comment in comments" :key="comment.id" :comment="comment" :ticket="ticket" />
 
     <UCard>
       <UForm :schema="commentSchema" :state="newComment" @submit="createComment" class="flex flex-col gap-2 w-full">
@@ -107,6 +111,7 @@
 import { z } from 'zod';
 
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 
 const ticketId = route.params.ticketId as string;
@@ -190,5 +195,47 @@ async function createComment() {
   };
 
   await refreshComments();
+}
+
+async function closeTicket() {
+  if (!confirm('Are you sure you want to close this ticket?')) {
+    return;
+  }
+
+  await $fetch(`/api/tickets/${ticketId}`, {
+    method: 'PATCH',
+    body: {
+      status: 'closed',
+    },
+  });
+
+  toast.add({
+    title: 'Ticket closed',
+    description: `Ticket #${ticket.value!.id} closed successfully`,
+    color: 'green',
+  });
+
+  router.back();
+}
+
+async function reopenTicket() {
+  if (!confirm('Are you sure you want to reopen this ticket?')) {
+    return;
+  }
+
+  await $fetch(`/api/tickets/${ticketId}`, {
+    method: 'PATCH',
+    body: {
+      status: 'open',
+    },
+  });
+
+  await refreshTicket();
+
+  toast.add({
+    title: 'Ticket reopened',
+    description: `Ticket #${ticket.value!.id} reopen successfully`,
+    color: 'green',
+  });
 }
 </script>

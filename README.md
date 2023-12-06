@@ -20,8 +20,8 @@
   - [x] private comments / notes
   - [x] show open time
   - [x] assignee
-  - [ ] close ticket
-  - [ ] reopen ticket
+  - [x] close ticket
+  - [x] reopen ticket
   - [x] change assignee
   - [ ] reply using predefined templates
   - [ ] add category to tickets
@@ -29,10 +29,11 @@
 - [ ] customer (details)
   - [ ] name, email, phone, address, avatar
   - [ ] show customer tickets
-- [ ] email
-  - [ ] add new email as ticket
-  - [ ] auto reply for new ticket
-  - [ ] add email as comment to existing ticket
+- [x] email
+  - [x] add new email as ticket
+  - [x] auto reply for new ticket
+  - [x] add email as comment to existing ticket
+  - [x] send agent comments as email to customer
 - [ ] phone
   - [ ] add note (with call duration, ...) to ticket if customer calls, so user can add comments later
 - [ ] customer portal

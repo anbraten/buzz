@@ -9,6 +9,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ status: 400, message: 'userId is required' });
   }
   const userId = parseInt(_userId, 10);
+  if (isNaN(userId)) {
+    throw createError({ status: 400, message: 'userId must be a number' });
+  }
 
   const user = await db.select().from(userSchema).where(eq(userSchema.id, userId)).get();
   if (!user) {
